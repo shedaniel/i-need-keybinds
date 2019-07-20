@@ -46,9 +46,9 @@ public class KeybindingItemWidget extends Widget {
     
     public float getLinearProgress() {
         if (INeedKeybinds.hudState != lastState && lastState == hudState)
-            return 1f - Math.min((System.currentTimeMillis() - lastSwitch) / ANIMATE, 1f);
+            return 1f - Math.min((System.currentTimeMillis() - lastSwitch) / getAnimate(), 1f);
         else if (INeedKeybinds.hudState != lastState && INeedKeybinds.hudState == hudState)
-            return Math.min((System.currentTimeMillis() - lastSwitch) / ANIMATE, 1f);
+            return Math.min((System.currentTimeMillis() - lastSwitch) / getAnimate(), 1f);
         return 0f;
     }
     

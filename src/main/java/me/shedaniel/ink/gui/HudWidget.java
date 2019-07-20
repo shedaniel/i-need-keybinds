@@ -54,9 +54,9 @@ public class HudWidget extends Widget {
     
     private float getLinearAlpha() {
         if (lastState != HudState.HIDDEN && hudState == HudState.HIDDEN)
-            return 1f - Math.min((System.currentTimeMillis() - lastSwitch) / ANIMATE, 1f);
+            return 1f - Math.min((System.currentTimeMillis() - lastSwitch) / getAnimate(), 1f);
         else if (lastState == HudState.HIDDEN && hudState != HudState.HIDDEN)
-            return Math.min((System.currentTimeMillis() - lastSwitch) / ANIMATE, 1f);
+            return Math.min((System.currentTimeMillis() - lastSwitch) / getAnimate(), 1f);
         return hudState != HudState.HIDDEN ? 1 : 0;
     }
     

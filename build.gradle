@@ -26,7 +26,9 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	modCompile "cloth:ClothEvents:${cloth_events_version}"
+	modCompile "blue.endless:jankson:${jankson_version}"
 	include "cloth:ClothEvents:${cloth_events_version}"
+	include "blue.endless:jankson:${jankson_version}"
 
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	// You may need to force-disable transitiveness on them.

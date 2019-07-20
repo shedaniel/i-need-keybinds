@@ -16,7 +16,6 @@ import java.util.Map;
 
 public class INeedKeybinds implements ClientModInitializer {
     
-    public static final float ANIMATE = 250f;
     public static final int WIDTH = 150;
     public static FabricKeyBinding toggleHud, numbers[] = new FabricKeyBinding[8];
     public static long lastSwitch = -1;
@@ -24,12 +23,11 @@ public class INeedKeybinds implements ClientModInitializer {
     public static HudState hudState = HudState.HIDDEN;
     public static HudState lastState = HudState.HIDDEN;
     public static HudWidget hudWidget;
-    public static ConfigObject configObject = new ConfigObject();
+    public static ConfigObject configObject;
+    public static ConfigManager configManager;
     
-    static {
-        ConfigObject.CategoryObject category = configObject.categories.get(0);
-        category.name = "Test Category";
-        category.keybinds.add("key.screenshot");
+    public static float getAnimate() {
+        return configObject.animate;
     }
     
     public static void renderHud(float delta) {
@@ -74,6 +72,7 @@ public class INeedKeybinds implements ClientModInitializer {
     
     @Override
     public void onInitializeClient() {
+        configManager = new ConfigManager();
         String category = "category.ink.keybinds";
         KeyBindingRegistry.INSTANCE.addCategory(category);
         KeyBindingRegistry.INSTANCE.register(toggleHud = FabricKeyBinding.Builder.create(new Identifier("i-need-keybinds", "toggle_hud"), InputUtil.Type.KEYSYM, 320, category).build());
