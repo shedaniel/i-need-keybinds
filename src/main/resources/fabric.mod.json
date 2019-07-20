@@ -1,36 +1,28 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "i-need-keybinds",
   "version": "${version}",
-
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "i need keybinds",
+  "description": "lol no",
   "authors": [
-    "Me!"
+    "Danielshe"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "sources": "https://github.com/shedaniel/i-need-keybinds"
   },
-
-  "license": "CC0-1.0",
-  "icon": "assets/modid/icon.png",
-
-  "environment": "*",
+  "license": "Apache-2.0",
+  "icon": "icon.png",
+  "environment": "client",
   "entrypoints": {
-    "main": [
-      "net.fabricmc.example.ExampleMod"
+    "client": [
+      "me.shedaniel.ink.INeedKeybinds"
     ]
   },
   "mixins": [
-    "modid.mixins.json"
+    "ink.mixins.json"
   ],
-
   "depends": {
     "fabricloader": ">=0.4.0",
     "fabric": "*"
-  },
-  "suggests": {
-    "flamingo": "*"
   }
 }
