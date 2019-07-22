@@ -5,7 +5,7 @@ import com.google.common.collect.Lists;
 import java.util.List;
 
 public class ConfigObject {
-    public float animate = 200f;
+    public float animate = 300;
     public List<CategoryObject> categories;
     
     public ConfigObject() {

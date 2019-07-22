@@ -11,8 +11,11 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.util.Identifier;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class INeedKeybinds implements ClientModInitializer {
     
@@ -25,6 +28,7 @@ public class INeedKeybinds implements ClientModInitializer {
     public static HudWidget hudWidget;
     public static ConfigObject configObject;
     public static ConfigManager configManager;
+    public static List<KeyBinding> pressed = new ArrayList<>();
     
     public static float getAnimate() {
         return configObject.animate;
@@ -53,9 +57,7 @@ public class INeedKeybinds implements ClientModInitializer {
     }
     
     public static float ease(float t) {
-        float sqt = t * t;
-        return sqt / (2.0f * (sqt - t) + 1.0f);
-        //        return 1 - (--t) * t * t * t;
+        return (float) (1f * (-Math.pow(2, -10 * t / 1f) + 1));
     }
     
     public static Map<String, KeyBinding> getKeysByIdMap() {
@@ -78,7 +80,13 @@ public class INeedKeybinds implements ClientModInitializer {
         KeyBindingRegistry.INSTANCE.register(toggleHud = FabricKeyBinding.Builder.create(new Identifier("i-need-keybinds", "toggle_hud"), InputUtil.Type.KEYSYM, 320, category).build());
         for(int i = 0; i < 8; i++)
             KeyBindingRegistry.INSTANCE.register(numbers[i] = FabricKeyBinding.Builder.create(new Identifier("i-need-keybinds", "number_" + i), InputUtil.Type.KEYSYM, 321 + i, category).build());
+        List<KeyBinding> unPress = new ArrayList<>();
         ClothClientHooks.HANDLE_INPUT.register(client -> {
+            if (!unPress.isEmpty()) {
+                unPress.forEach(keyBinding -> ((KeyBindingHooks) keyBinding).ink_setPressed(false));
+                unPress.clear();
+            }
+            List<KeyBinding> pressedKeys = new ArrayList<>();
             while (toggleHud.wasPressed())
                 if (hudState == HudState.HIDDEN)
                     switchState(HudState.GENERAL);
@@ -88,7 +96,7 @@ public class INeedKeybinds implements ClientModInitializer {
                     switchState(HudState.HIDDEN);
             for(int i = 0; i < 8; i++) {
                 boolean a = false;
-                while (numbers[i].wasPressed()) {
+                if (numbers[i].isPressed()) {
                     if (hudState == HudState.GENERAL && configObject.categories.get(i).name != null) {
                         a = true;
                         switchState(HudState.CATEGORY);
@@ -97,6 +105,8 @@ public class INeedKeybinds implements ClientModInitializer {
                         KeyBinding keyBinding = INeedKeybinds.getKeysByIdMap().get(configObject.categories.get(INeedKeybinds.category).keybinds.get(i));
                         if (keyBinding != null) {
                             a = true;
+                            pressedKeys.add(keyBinding);
+                            unPress.add(keyBinding);
                             ((KeyBindingHooks) keyBinding).ink_setPressed(true);
                             ((KeyBindingHooks) keyBinding).ink_setTimesPressed(((KeyBindingHooks) keyBinding).ink_getTimesPressed() + 1);
                         }
@@ -105,6 +115,7 @@ public class INeedKeybinds implements ClientModInitializer {
                 if (a)
                     break;
             }
+            pressed = pressedKeys.stream().distinct().collect(Collectors.toList());
         });
     }
     

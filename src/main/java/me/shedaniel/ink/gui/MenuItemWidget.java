@@ -4,6 +4,7 @@ import me.shedaniel.ink.ConfigObject;
 import me.shedaniel.ink.HudState;
 import me.shedaniel.ink.INeedKeybinds;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.resource.language.I18n;
 
 import java.awt.*;
 import java.util.Collections;
@@ -33,7 +34,7 @@ public class MenuItemWidget extends Widget {
             fill(title.x, title.y, title.x + 16, title.y + title.height, color(categoryObject.name == null ? 50 : 0, 0, 0, (int) (200f * alpha)));
             fill(title.x + 21, title.y, title.x + title.width, title.y + title.height, color(categoryObject.name == null ? 50 : 0, 0, 0, (int) (200f * alpha)));
             font.drawWithShadow((id + 1) + "", bounds.x + 5, bounds.y + 4, 16777215);
-            font.drawWithShadow(categoryObject.name == null ? "Not Set" : categoryObject.name, bounds.x + 25, bounds.y + 4, 16777215);
+            font.drawWithShadow(categoryObject.name == null ? I18n.translate("text.ink.not-set") : categoryObject.name, bounds.x + 25, bounds.y + 4, 16777215);
         }
     }
     

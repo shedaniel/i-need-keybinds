@@ -6,7 +6,10 @@
   ],
   "client": [
     "MixinInGameHud",
-    "MixinKeyBinding"
+    "MixinKeyBinding",
+    "MixinChatScreen",
+    "MixinClientPlayerEntity",
+    "MixinClientPlayNetworkHandler"
   ],
   "injectors": {
     "defaultRequire": 1

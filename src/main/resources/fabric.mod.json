@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "i-need-keybinds",
   "version": "${version}",
-  "name": "i need keybinds",
+  "name": "I Need Keybinds",
   "description": "lol no",
   "authors": [
     "Danielshe"
@@ -11,11 +11,14 @@
     "sources": "https://github.com/shedaniel/i-need-keybinds"
   },
   "license": "Apache-2.0",
-  "icon": "icon.png",
+  "icon": "ink.png",
   "environment": "client",
   "entrypoints": {
     "client": [
       "me.shedaniel.ink.INeedKeybinds"
+    ],
+    "modmenu": [
+      "me.shedaniel.ink.cloth.ModMenuCombat"
     ]
   },
   "mixins": [

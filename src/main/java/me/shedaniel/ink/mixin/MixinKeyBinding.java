@@ -35,6 +35,12 @@ public abstract class MixinKeyBinding implements KeyBindingHooks {
         return timesPressed;
     }
     
+    @Inject(method = "isPressed", at = @At("HEAD"), cancellable = true)
+    public void isPressed(CallbackInfoReturnable callbackInfo) {
+        if (INeedKeybinds.pressed.stream().anyMatch(keyBinding -> keyBinding.getId().equalsIgnoreCase(getId())))
+            callbackInfo.setReturnValue(true);
+    }
+    
     @Inject(method = "matchesKey", at = @At("HEAD"), cancellable = true)
     public void matchesKey(int int_1, int int_2, CallbackInfoReturnable callbackInfo) {
         if (getId().startsWith("key.i-need-keybinds.number_"))
