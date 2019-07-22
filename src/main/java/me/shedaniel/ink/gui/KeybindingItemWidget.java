@@ -2,9 +2,11 @@ package me.shedaniel.ink.gui;
 
 import me.shedaniel.ink.HudState;
 import me.shedaniel.ink.INeedKeybinds;
+import me.shedaniel.ink.api.KeyFunction;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
-import net.minecraft.client.options.KeyBinding;
-import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.util.Window;
+import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.util.Collections;
@@ -14,6 +16,7 @@ import static me.shedaniel.ink.INeedKeybinds.*;
 
 public class KeybindingItemWidget extends Widget {
     
+    static final int SPIN = 10000;
     private Rectangle bounds;
     private HudState hudState;
     private int id;
@@ -25,31 +28,32 @@ public class KeybindingItemWidget extends Widget {
     }
     
     @Override
-    public void render(float var3) {
+    public void render(float var3, long ms) {
         if (INeedKeybinds.hudState == hudState || (INeedKeybinds.hudState == HudState.HIDDEN && lastState == hudState)) {
             Rectangle bounds = getBounds();
             float alpha = INeedKeybinds.hudWidget.getAlpha();
             Rectangle title = new Rectangle((int) (10 - (1 - alpha) * (WIDTH + 10)), bounds.y, WIDTH, 16);
-            List<String> keybinds = configObject.categories.get(category).keybinds;
-            KeyBinding keybind = id < keybinds.size() ? INeedKeybinds.getKeysByIdMap().get(keybinds.get(id)) : null;
-            fill(title.x, title.y, title.x + 16, title.y + title.height, color(keybind == null ? 50 : 0, 0, 0, (int) (200f * alpha)));
-            fill(title.x + 21, title.y, title.x + title.width, title.y + title.height, color(keybind == null ? 50 : 0, 0, 0, (int) (200f * alpha)));
+            Window window = MinecraftClient.getInstance().window;
+            List<KeyFunction> keyFunctions = configObject.categories.get(category).getFunctions();
+            KeyFunction keyFunction = id < keyFunctions.size() ? keyFunctions.get(id) : null;
+            fill(title.x, title.y, title.x + 16, title.y + title.height, color(keyFunction == null || keyFunction.isNull() ? 50 : 0, 0, 0, (int) (200f * alpha)));
+            fill(title.x + 21, title.y, title.x + title.width, title.y + title.height, color(keyFunction == null || keyFunction.isNull() ? 50 : 0, 0, 0, (int) (200f * alpha)));
             font.drawWithShadow((id + 1) + "", bounds.x + 5, bounds.y + 4, 16777215);
-            font.drawWithShadow(keybind == null ? "Not Set" : I18n.translate(keybind.getId()), bounds.x + 25, bounds.y + 4, 16777215);
+            GL11.glEnable(GL11.GL_SCISSOR_TEST);
+            GL11.glScissor(Math.round(window.getHeight() * ((title.x + 21f) / window.getScaledHeight())), Math.round(window.getHeight() - Math.round(window.getHeight() * (16f / window.getScaledHeight())) - Math.round(window.getHeight() * (title.getY() / window.getScaledHeight()))), Math.round(window.getWidth() * ((title.width - 21f) / window.getScaledWidth())), Math.round(window.getHeight() * (16f / window.getScaledHeight())));
+            String s = keyFunction == null || keyFunction.isNull() ? "Not Set" : keyFunction.hasCommand() ? keyFunction.getCommand() : keyFunction.getFormattedName();
+            int offset = 0;
+            if (font.getStringWidth(s) > title.width - 21) {
+                offset = font.getStringWidth(s) + 8 - (title.width - 21);
+                offset *= ms % SPIN >= (SPIN / 2) ? 1 - ((ms % SPIN) - (SPIN / 2)) / (SPIN / 2f) : Math.min(ms % SPIN, (SPIN / 2)) / (SPIN / 2f);
+            }
+            font.drawWithShadow(s, bounds.x + 25 - offset, bounds.y + 4, 16777215);
+            GL11.glDisable(GL11.GL_SCISSOR_TEST);
         }
     }
     
     public float getProgress() {
         return INeedKeybinds.hudWidget.getAlpha();
-        //        return ease(getLinearProgress());
-    }
-    
-    public float getLinearProgress() {
-        if (INeedKeybinds.hudState != lastState && lastState == hudState)
-            return 1f - Math.min((System.currentTimeMillis() - lastSwitch) / getAnimate(), 1f);
-        else if (INeedKeybinds.hudState != lastState && INeedKeybinds.hudState == hudState)
-            return Math.min((System.currentTimeMillis() - lastSwitch) / getAnimate(), 1f);
-        return 0f;
     }
     
     @Override

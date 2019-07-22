@@ -1,12 +1,16 @@
 package me.shedaniel.ink.cloth;
 
+import me.shedaniel.ink.api.KeyFunction;
 import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.TranslatableText;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -14,11 +18,18 @@ import java.util.function.Consumer;
 public class KeybindingSelectionScreen extends Screen {
     
     protected KeybindingSelectionWidget widget;
-    protected Consumer<Optional<KeyBinding>> consumer;
+    protected Consumer<Optional<KeyFunction>> consumer;
+    protected String cmd;
     
-    public KeybindingSelectionScreen(Consumer<Optional<KeyBinding>> consumer) {
+    public KeybindingSelectionScreen(Consumer<Optional<KeyFunction>> consumer, String cmd) {
         super(new TranslatableText("title.ink.select_keybind"));
         this.consumer = consumer;
+        this.cmd = cmd;
+    }
+    
+    @Override
+    public boolean shouldCloseOnEsc() {
+        return false;
     }
     
     @Override
@@ -30,6 +41,23 @@ public class KeybindingSelectionScreen extends Screen {
         KeyBinding[] clone = minecraft.options.keysAll.clone();
         KeyBinding[] var5 = minecraft.options.keysAll.clone();
         int var6 = clone.length;
+        widget.addEntry(new KeybindingSelectionWidget.Entry() {
+            @Override
+            public List<? extends Element> children() {
+                return Collections.emptyList();
+            }
+    
+            @Override
+            public int getItemHeight() {
+                return 15;
+            }
+    
+            @Override
+            public void render(int var1, int var2, int var3, int var4, int var5, int var6, int var7, boolean var8, float var9) {
+            }
+        });
+        widget.addEntry(new KeybindingSelectionWidget.CategoryEntry("text.category.ink.commands"));
+        widget.addEntry(new KeybindingSelectionWidget.CommandEntry(consumer, cmd));
         for(int var7 = 0; var7 < var6; ++var7) {
             KeyBinding keyBinding_1 = var5[var7];
             String string_2 = keyBinding_1.getCategory();

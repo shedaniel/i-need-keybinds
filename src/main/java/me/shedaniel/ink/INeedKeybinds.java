@@ -2,10 +2,12 @@ package me.shedaniel.ink;
 
 import me.shedaniel.cloth.hooks.ClothClientHooks;
 import me.shedaniel.ink.api.KeyBindingHooks;
+import me.shedaniel.ink.api.KeyFunction;
 import me.shedaniel.ink.gui.HudWidget;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
 import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.util.Identifier;
@@ -37,7 +39,7 @@ public class INeedKeybinds implements ClientModInitializer {
     public static void renderHud(float delta) {
         if (hudWidget == null)
             hudWidget = new HudWidget();
-        hudWidget.render(delta);
+        hudWidget.render(delta, System.currentTimeMillis());
     }
     
     public static void switchState(HudState hudState) {
@@ -60,7 +62,7 @@ public class INeedKeybinds implements ClientModInitializer {
         return (float) (1f * (-Math.pow(2, -10 * t / 1f) + 1));
     }
     
-    public static Map<String, KeyBinding> getKeysByIdMap() {
+    private static Map<String, KeyBinding> getKeysByIdMap() {
         try {
             Field field = KeyBinding.class.getDeclaredFields()[0];
             if (!field.isAccessible())
@@ -70,6 +72,10 @@ public class INeedKeybinds implements ClientModInitializer {
             e.printStackTrace();
         }
         return Collections.emptyMap();
+    }
+    
+    public static KeyBinding getKeyBindingByString(String s) {
+        return getKeysByIdMap().get(s);
     }
     
     @Override
@@ -96,19 +102,31 @@ public class INeedKeybinds implements ClientModInitializer {
                     switchState(HudState.HIDDEN);
             for(int i = 0; i < 8; i++) {
                 boolean a = false;
-                if (numbers[i].isPressed()) {
+                boolean b = false;
+                while (numbers[i].wasPressed()) {
                     if (hudState == HudState.GENERAL && configObject.categories.get(i).name != null) {
-                        a = true;
-                        switchState(HudState.CATEGORY);
-                        switchCategory(i);
-                    } else if (hudState == HudState.CATEGORY && i < configObject.categories.get(INeedKeybinds.category).keybinds.size()) {
-                        KeyBinding keyBinding = INeedKeybinds.getKeysByIdMap().get(configObject.categories.get(INeedKeybinds.category).keybinds.get(i));
-                        if (keyBinding != null) {
-                            a = true;
-                            pressedKeys.add(keyBinding);
-                            unPress.add(keyBinding);
-                            ((KeyBindingHooks) keyBinding).ink_setPressed(true);
-                            ((KeyBindingHooks) keyBinding).ink_setTimesPressed(((KeyBindingHooks) keyBinding).ink_getTimesPressed() + 1);
+                        if (!b) {
+                            switchState(HudState.CATEGORY);
+                            switchCategory(i);
+                        }
+                        a = b = true;
+                    } else if (hudState == HudState.CATEGORY && i < configObject.categories.get(INeedKeybinds.category).getFunctions().size()) {
+                        KeyFunction keyFunction = configObject.categories.get(INeedKeybinds.category).getFunctions().get(i);
+                        if (!keyFunction.hasCommand() && keyFunction.getKeybind() != null) {
+                            if (!b) {
+                                KeyBinding keybind = keyFunction.getKeybind();
+                                pressedKeys.add(keybind);
+                                unPress.add(keybind);
+                                ((KeyBindingHooks) keybind).ink_setPressed(true);
+                                ((KeyBindingHooks) keybind).ink_setTimesPressed(((KeyBindingHooks) keybind).ink_getTimesPressed() + 1);
+                            }
+                            a = b = true;
+                        } else if (keyFunction.hasCommand()) {
+                            if (!b) {
+                                String command = keyFunction.getCommand();
+                                MinecraftClient.getInstance().player.sendChatMessage(command);
+                            }
+                            a = b = true;
                         }
                     }
                 }

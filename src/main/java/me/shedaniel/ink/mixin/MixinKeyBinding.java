@@ -3,6 +3,7 @@ package me.shedaniel.ink.mixin;
 import me.shedaniel.ink.HudState;
 import me.shedaniel.ink.INeedKeybinds;
 import me.shedaniel.ink.api.KeyBindingHooks;
+import me.shedaniel.ink.api.KeyFunction;
 import net.minecraft.client.options.KeyBinding;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -47,11 +48,11 @@ public abstract class MixinKeyBinding implements KeyBindingHooks {
             return;
         for(int i = 0; i < 8; i++) {
             if (INeedKeybinds.numbers[i].matchesKey(int_1, int_2)) {
-                if (INeedKeybinds.hudState == HudState.CATEGORY && i < INeedKeybinds.configObject.categories.get(INeedKeybinds.category).keybinds.size()) {
-                    KeyBinding keyBinding = INeedKeybinds.getKeysByIdMap().get(INeedKeybinds.configObject.categories.get(INeedKeybinds.category).keybinds.get(i));
-                    if (keyBinding.getId().equalsIgnoreCase(getId())) {
-                        callbackInfo.setReturnValue(true);
-                    }
+                if (INeedKeybinds.hudState == HudState.CATEGORY && i < INeedKeybinds.configObject.categories.get(INeedKeybinds.category).getFunctions().size()) {
+                    KeyFunction keyFunction = INeedKeybinds.configObject.categories.get(INeedKeybinds.category).getFunctions().get(i);
+                    if (!keyFunction.hasCommand())
+                        if (keyFunction.getKeybind().getId().equalsIgnoreCase(getId()))
+                            callbackInfo.setReturnValue(true);
                 }
             }
         }

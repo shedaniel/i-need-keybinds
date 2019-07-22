@@ -32,20 +32,19 @@ public class HudWidget extends Widget {
     }
     
     @Override
-    public void render(float var3) {
+    public void render(float var3, long ms) {
         GuiLighting.disable();
         float alpha = getAlpha();
         Rectangle title = new Rectangle((int) (10 - (1 - alpha) * (WIDTH + 10)), 10, WIDTH, 16);
         fill(title.x, title.y, title.x + title.width, title.y + title.height, color(0, 0, 0, (int) (225f * alpha)));
         generalWidgets.forEach(widget -> {
             GuiLighting.disable();
-            widget.render(var3);
+            widget.render(var3, ms);
         });
         categoryWidgets.forEach(widget -> {
             GuiLighting.disable();
-            widget.render(var3);
+            widget.render(var3, ms);
         });
-        
     }
     
     float getAlpha() {

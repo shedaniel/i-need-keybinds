@@ -22,7 +22,7 @@ public class BackHudWidget extends Widget {
     }
     
     @Override
-    public void render(float var3) {
+    public void render(float var3, long ms) {
         if (INeedKeybinds.hudState == hudState || (INeedKeybinds.hudState == HudState.HIDDEN && lastState == hudState)) {
             Rectangle bounds = getBounds();
             float alpha = INeedKeybinds.hudWidget.getAlpha();

@@ -17,7 +17,7 @@ public abstract class Widget extends AbstractParentElement {
      */
     protected final TextRenderer font = minecraft.textRenderer;
     
-    abstract public void render(float var3);
+    abstract public void render(float var3, long ms);
     
     abstract public Shape getBounds();
     

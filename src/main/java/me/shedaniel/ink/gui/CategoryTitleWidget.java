@@ -15,7 +15,7 @@ public class CategoryTitleWidget extends TitleWidget {
     }
     
     @Override
-    public void render(float var3) {
+    public void render(float var3, long ms) {
         if (INeedKeybinds.hudState == hudState || (INeedKeybinds.hudState == HudState.HIDDEN && lastState == hudState)) {
             Rectangle bounds = getBounds();
             ConfigObject.CategoryObject categoryObject = configObject.categories.get(category);

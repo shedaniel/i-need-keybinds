@@ -1,11 +1,15 @@
 package me.shedaniel.ink.cloth;
 
+import com.google.common.collect.Lists;
 import me.shedaniel.clothconfig2.gui.widget.DynamicElementListWidget;
+import me.shedaniel.ink.api.KeyFunction;
+import me.shedaniel.ink.impl.KeyFunctionImpl;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.Identifier;
@@ -67,11 +71,11 @@ public class KeybindingSelectionWidget extends DynamicElementListWidget<Keybindi
         private AtomicInteger entryWidth;
         private AbstractButtonWidget widget;
         
-        public KeyBindingEntry(Consumer<Optional<KeyBinding>> consumer, KeyBinding keyBinding_1, AtomicInteger entryWidth) {
+        public KeyBindingEntry(Consumer<Optional<KeyFunction>> consumer, KeyBinding keyBinding_1, AtomicInteger entryWidth) {
             this.keyBinding_1 = keyBinding_1;
             this.entryWidth = entryWidth;
             this.widget = new ButtonWidget(0, 0, 100, 20, I18n.translate("text.ink.select"), var1 -> {
-                consumer.accept(Optional.ofNullable(keyBinding_1));
+                consumer.accept(Optional.ofNullable(new KeyFunctionImpl(keyBinding_1)));
             });
         }
         
@@ -89,4 +93,38 @@ public class KeybindingSelectionWidget extends DynamicElementListWidget<Keybindi
             return Collections.singletonList(widget);
         }
     }
+    
+    public static class CommandEntry extends Entry {
+        private TextFieldWidget textField;
+        private AbstractButtonWidget widget;
+        
+        public CommandEntry(Consumer<Optional<KeyFunction>> consumer, String s) {
+            int i = MinecraftClient.getInstance().textRenderer.getStringWidth(I18n.translate("text.ink.select")) + 8;
+            this.widget = new ButtonWidget(0, 0, i, 20, I18n.translate("text.ink.select"), var1 -> {
+                consumer.accept(Optional.ofNullable(new KeyFunctionImpl("cmd:" + textField.getText())));
+            });
+            this.textField = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, 0, 0, 150 - i - 10, 16, "");
+            this.textField.setMaxLength(1000000);
+            this.textField.setText(s);
+        }
+        
+        @Override
+        public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
+            TextRenderer font = MinecraftClient.getInstance().textRenderer;
+            font.draw(I18n.translate("text.category.ink.commands"), x, y, 16777215);
+            widget.y = y - 7;
+            widget.x = x + entryWidth - widget.getWidth();
+            widget.active = textField.getText().startsWith("/");
+            textField.y = y - 5;
+            textField.x = widget.x - 10 - textField.getWidth();
+            widget.render(mouseX, mouseY, delta);
+            textField.render(mouseX, mouseY, delta);
+        }
+        
+        @Override
+        public List<? extends Element> children() {
+            return Lists.newArrayList(widget, textField);
+        }
+    }
+    
 }

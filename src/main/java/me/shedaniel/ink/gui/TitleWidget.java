@@ -22,7 +22,7 @@ public class TitleWidget extends Widget {
     }
     
     @Override
-    public void render(float var3) {
+    public void render(float var3, long ms) {
         if (INeedKeybinds.hudState == hudState || (INeedKeybinds.hudState == HudState.HIDDEN && lastState == hudState)) {
             Rectangle bounds = getBounds();
             String s = "Select Category";

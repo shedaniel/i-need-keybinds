@@ -26,15 +26,18 @@ public class ClothConfigCombat {
             ConfigCategory category = builder.getOrCreateCategory("config.category.category_" + i);
             ConfigObject.CategoryObject object = configObject.categories.get(i);
             StringListEntry entry;
-            category.addEntry(entry=eb.startTextField("config.category.name", object.name == null ? "null" : object.name).setDefaultValue("null").setSaveConsumer(s -> {
+            category.addEntry(entry = eb.startTextField("config.category.name", object.name == null ? "null" : object.name).setDefaultValue("null").setSaveConsumer(s -> {
                 if (s.equalsIgnoreCase("null") || s.isEmpty()) {
-                    object.keybinds.clear();
+                    object.getKeybinds().clear();
                     object.name = null;
                 } else {
                     object.name = s;
                 }
             }).build());
-            category.addEntry(new KeybindingListEntry(entry,"config.category.keys", object.keybinds.stream().filter(s -> s != null && !s.isEmpty()).collect(Collectors.toList()), true, strings -> object.keybinds = strings.stream().filter(s -> s != null && !s.isEmpty()).collect(Collectors.toList()), eb.getResetButtonKey(), false));
+            category.addEntry(new KeybindingListEntry(entry, "config.category.keys", object.getFunctions().stream().collect(Collectors.toList()), true, strings -> {
+                object.getKeybinds().clear();
+                object.getKeybinds().addAll(strings.stream().map(Object::toString).collect(Collectors.toList()));
+            }, eb.getResetButtonKey(), false));
         }
         builder.setSavingRunnable(() -> {
             try {
