@@ -4,7 +4,7 @@
   "text.ink.delete_entry": "删除条目",
   "text.ink.select": "选择",
   "title.ink.select_keybind": "选择功能",
-  "category.ink.keybinds": "我需要热键绑定",
+  "category.ink.keybinds": "I Need Keybinds",
   "text.category.ink.commands": "命令",
   "text.ink.commands": "命令:",
   "key.i-need-keybinds.toggle_hud": "切换热键绑定HUD",
@@ -16,7 +16,7 @@
   "key.i-need-keybinds.number_5": "热键绑定 Hud: 第六项",
   "key.i-need-keybinds.number_6": "热键绑定 Hud: 第七项",
   "key.i-need-keybinds.number_7": "热键绑定 Hud: 第八项",
-  "config.i-need-keybinds.title": "我需要热键绑定 配置",
+  "config.i-need-keybinds.title": "I Need Keybinds 配置",
   "config.category.general": "通常",
   "config.field.animationTicks": "动画持续时间",
   "config.category.category_0": "第一项",
@@ -30,6 +30,6 @@
   "config.category.name": "类别名称",
   "config.category.keys": "功能",
   "config.category.key.not-set": "编辑：未设置",
-  "config.category.key": "编辑：％",
+  "config.category.key": "编辑：%s",
   "error.category.need_name": "需要有效的类别名称"
 }
