@@ -1,5 +1,7 @@
+import java.text.SimpleDateFormat
+
 plugins {
-    id 'fabric-loom' version '0.2.3-SNAPSHOT'
+    id 'fabric-loom' version '0.2.6-SNAPSHOT'
     id 'maven-publish'
 }
 
@@ -7,14 +9,13 @@ sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 archivesBaseName = project.archives_base_name
-version = project.mod_version
+version = ((String) project.mod_version).contains("unstable") ? (project.mod_version + "." + buildTime()) : project.mod_version
 group = project.maven_group
 
-minecraft {
-}
-
-repositories {
-    maven { url "https://minecraft.curseforge.com/api/maven" }
+static def buildTime() {
+    def df = new SimpleDateFormat("yyyyMMddHHmm")
+    df.setTimeZone(TimeZone.getTimeZone("UTC"))
+    return df.format(new Date())
 }
 
 dependencies {
@@ -25,17 +26,17 @@ dependencies {
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    modCompile "cloth:ClothEvents:${cloth_events_version}"
+    modCompile "me.shedaniel.cloth:cloth-events:${cloth_events_version}"
     modCompile "blue.endless:jankson:${jankson_version}"
-    modCompile('me.shedaniel.cloth:config-2:0.4.1') {
+    modCompile('me.shedaniel.cloth:config-2:2.4-unstable.201911031154') {
         transitive = false
     }
     modCompile("io.github.prospector:modmenu:${modmenu_version}") {
         transitive = false
     }
-    include "cloth:ClothEvents:${cloth_events_version}"
+    include "me.shedaniel.cloth:cloth-events:${cloth_events_version}"
     include "blue.endless:jankson:${jankson_version}"
-    include 'me.shedaniel.cloth:config-2:0.4.1'
+    include 'me.shedaniel.cloth:config-2:2.4-unstable.201911031154'
 
     // PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
     // You may need to force-disable transitiveness on them.

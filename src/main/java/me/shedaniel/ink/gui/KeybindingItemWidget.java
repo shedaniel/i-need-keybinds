@@ -33,7 +33,7 @@ public class KeybindingItemWidget extends Widget {
             Rectangle bounds = getBounds();
             float alpha = INeedKeybinds.hudWidget.getAlpha();
             Rectangle title = new Rectangle((int) (10 - (1 - alpha) * (WIDTH + 10)), bounds.y, WIDTH, 16);
-            Window window = MinecraftClient.getInstance().window;
+            Window window = MinecraftClient.getInstance().getWindow();
             List<KeyFunction> keyFunctions = configObject.categories.get(category).getFunctions();
             KeyFunction keyFunction = id < keyFunctions.size() ? keyFunctions.get(id) : null;
             fill(title.x, title.y, title.x + 16, title.y + title.height, color(keyFunction == null || keyFunction.isNull() ? 50 : 0, 0, 0, (int) (200f * alpha)));
