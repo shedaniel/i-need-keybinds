@@ -35,31 +35,29 @@ public class KeybindingSelectionScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        widget = new KeybindingSelectionWidget(minecraft, width, height, 23, height - 32, DrawableHelper.BACKGROUND_LOCATION);
+        widget = new KeybindingSelectionWidget(client, width, height, 23, height - 32, DrawableHelper.BACKGROUND_TEXTURE);
         AtomicInteger entryWidth = new AtomicInteger(0);
         String string_1 = null;
-        KeyBinding[] clone = minecraft.options.keysAll.clone();
-        KeyBinding[] var5 = minecraft.options.keysAll.clone();
+        KeyBinding[] clone = client.options.keysAll.clone();
         int var6 = clone.length;
         widget.addEntry(new KeybindingSelectionWidget.Entry() {
             @Override
             public List<? extends Element> children() {
                 return Collections.emptyList();
             }
-    
+            
             @Override
             public int getItemHeight() {
                 return 15;
             }
-    
+            
             @Override
             public void render(int var1, int var2, int var3, int var4, int var5, int var6, int var7, boolean var8, float var9) {
             }
         });
         widget.addEntry(new KeybindingSelectionWidget.CategoryEntry("text.category.ink.commands"));
         widget.addEntry(new KeybindingSelectionWidget.CommandEntry(consumer, cmd));
-        for(int var7 = 0; var7 < var6; ++var7) {
-            KeyBinding keyBinding_1 = var5[var7];
+        for (KeyBinding keyBinding_1 : clone) {
             String string_2 = keyBinding_1.getCategory();
             if (string_2.equalsIgnoreCase("category.ink.keybinds"))
                 continue;
@@ -67,7 +65,7 @@ public class KeybindingSelectionScreen extends Screen {
                 string_1 = string_2;
                 widget.addEntry(new KeybindingSelectionWidget.CategoryEntry(string_2));
             }
-            int int_1 = minecraft.textRenderer.getStringWidth(I18n.translate(keyBinding_1.getId()));
+            int int_1 = client.textRenderer.getStringWidth(I18n.translate(keyBinding_1.getId()));
             if (int_1 > entryWidth.get())
                 entryWidth.set(int_1);
             widget.addEntry(new KeybindingSelectionWidget.KeyBindingEntry(consumer, keyBinding_1, entryWidth));
@@ -85,7 +83,7 @@ public class KeybindingSelectionScreen extends Screen {
     public void render(int int_1, int int_2, float float_1) {
         renderDirtBackground(0);
         widget.render(int_1, int_2, float_1);
-        drawCenteredString(this.font, this.title.asFormattedString(), this.width / 2, 8, 16777215);
+        drawCenteredString(this.textRenderer, this.title.asFormattedString(), this.width / 2, 8, 16777215);
         super.render(int_1, int_2, float_1);
     }
 }

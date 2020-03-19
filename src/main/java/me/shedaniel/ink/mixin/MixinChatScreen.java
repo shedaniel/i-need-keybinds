@@ -25,7 +25,7 @@ public class MixinChatScreen extends Screen {
                                             ordinal = 1), cancellable = true)
     public void keyPressed(int int_1, int int_2, int int_3, CallbackInfoReturnable<Boolean> ci) {
         String[] split = this.chatField.getText().trim().toLowerCase().split(" ");
-        if (split.length > 0 && split[0].contentEquals("/inkconfig") && minecraft.currentScreen instanceof ClothConfigScreen)
+        if (split.length > 0 && split[0].contentEquals("/inkconfig") && client.currentScreen instanceof ClothConfigScreen)
             ci.setReturnValue(true);
     }
     

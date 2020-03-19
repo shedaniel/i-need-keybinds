@@ -38,16 +38,16 @@ public class MenuItemWidget extends Widget {
             ConfigObject.CategoryObject categoryObject = configObject.categories.get(id);
             fill(title.x, title.y, title.x + 16, title.y + title.height, color(categoryObject.name == null ? 50 : 0, 0, 0, (int) (200f * alpha)));
             fill(title.x + 21, title.y, title.x + title.width, title.y + title.height, color(categoryObject.name == null ? 50 : 0, 0, 0, (int) (200f * alpha)));
-            font.drawWithShadow((id + 1) + "", bounds.x + 5, bounds.y + 4, 16777215);
+            textRenderer.drawWithShadow((id + 1) + "", bounds.x + 5, bounds.y + 4, 16777215);
             GL11.glEnable(GL11.GL_SCISSOR_TEST);
             GL11.glScissor(Math.round(window.getHeight() * ((title.x + 21f) / window.getScaledHeight())), Math.round(window.getHeight() - Math.round(window.getHeight() * (16f / window.getScaledHeight())) - Math.round(window.getHeight() * (title.getY() / window.getScaledHeight()))), Math.round(window.getWidth() * ((title.width - 21f) / window.getScaledWidth())), Math.round(window.getHeight() * (16f / window.getScaledHeight())));
             String s = categoryObject.name == null ? I18n.translate("text.ink.not-set") : categoryObject.name;
             int offset = 0;
-            if (font.getStringWidth(s) > title.width - 21) {
-                offset = font.getStringWidth(s) + 8 - (title.width - 21);
+            if (textRenderer.getStringWidth(s) > title.width - 21) {
+                offset = textRenderer.getStringWidth(s) + 8 - (title.width - 21);
                 offset *= ms % SPIN >= (SPIN / 2) ? 1 - ((ms % SPIN) - (SPIN / 2)) / (SPIN / 2f) : Math.min(ms % SPIN, (SPIN / 2)) / (SPIN / 2f);
             }
-            font.drawWithShadow(s, bounds.x + 25 - offset, bounds.y + 4, 16777215);
+            textRenderer.drawWithShadow(s, bounds.x + 25 - offset, bounds.y + 4, 16777215);
             GL11.glDisable(GL11.GL_SCISSOR_TEST);
         }
     }

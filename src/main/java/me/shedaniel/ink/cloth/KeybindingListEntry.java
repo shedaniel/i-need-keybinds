@@ -1,7 +1,6 @@
 package me.shedaniel.ink.cloth;
 
-import me.shedaniel.clothconfig2.gui.entries.BaseListCell;
-import me.shedaniel.clothconfig2.gui.entries.BaseListEntry;
+import me.shedaniel.clothconfig2.gui.entries.AbstractListListEntry;
 import me.shedaniel.clothconfig2.gui.entries.StringListEntry;
 import me.shedaniel.ink.api.KeyFunction;
 import net.minecraft.client.MinecraftClient;
@@ -13,32 +12,26 @@ import net.minecraft.client.resource.language.I18n;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
-public class KeybindingListEntry extends BaseListEntry<KeyFunction, KeybindingListEntry.KeybindingListCell> {
+public class KeybindingListEntry extends AbstractListListEntry<KeyFunction, KeybindingListEntry.KeybindingListCell, KeybindingListEntry> {
     
     private StringListEntry entry;
     
-    public KeybindingListEntry(StringListEntry entry, String fieldName, List<KeyFunction> value, boolean defaultExpended, Consumer<List<KeyFunction>> saveConsumer, String resetButtonKey, boolean requiresRestart) {
-        super(fieldName, null, Collections::emptyList, baseListEntry -> new KeybindingListCell(null, (KeybindingListEntry) baseListEntry), saveConsumer, resetButtonKey, requiresRestart);
-        for(KeyFunction keyFunction : value)
-            cells.add(new KeybindingListCell(keyFunction, this));
-        this.widgets.addAll(cells);
-        expended = defaultExpended;
+    public KeybindingListEntry(StringListEntry entry, String fieldName, List<KeyFunction> values, boolean defaultExpended, Consumer<List<KeyFunction>> saveConsumer, String resetButtonKey, boolean requiresRestart) {
+//        super(fieldName, null, Collections::emptyList, baseListEntry -> new KeybindingListCell(null, (KeybindingListEntry) baseListEntry), saveConsumer, resetButtonKey, requiresRestart, false, false);
+        super(fieldName, values, defaultExpended, null, saveConsumer, Collections::emptyList, resetButtonKey, requiresRestart, false, false, (value, self) -> new KeybindingListCell(value, self));
+//        for (KeyFunction keyFunction : value)
+//            cells.add(new KeybindingListCell(keyFunction, this));
+//        this.widgets.addAll(cells);
+//        expanded = defaultExpended;
         this.entry = entry;
     }
     
     @Override
-    public boolean isDeleteButtonEnabled() {
-        return false;
-    }
-    
-    @Override
-    public boolean insertInFront() {
-        return false;
+    public KeybindingListEntry self() {
+        return this;
     }
     
     @Override
@@ -52,26 +45,25 @@ public class KeybindingListEntry extends BaseListEntry<KeyFunction, KeybindingLi
         }
         return Optional.empty();
     }
+
+//    @Override
+//    protected KeybindingListCell getFromValue(KeyFunction value) {
+//        return new KeybindingListCell(value, this);
+//    }
+
+//    @Override
+//    public List<KeyFunction> getValue() {
+//        return cells.stream().map(keybindingListCell -> keybindingListCell.keyFunction).filter(Objects::nonNull).collect(Collectors.toList());
+//    }
     
-    @Override
-    protected KeybindingListCell getFromValue(KeyFunction value) {
-        return new KeybindingListCell(value, this);
-    }
-    
-    @Override
-    public List<KeyFunction> getValue() {
-        return cells.stream().map(keybindingListCell -> keybindingListCell.keyFunction).filter(Objects::nonNull).collect(Collectors.toList());
-    }
-    
-    public static class KeybindingListCell extends BaseListCell {
+    public static class KeybindingListCell extends AbstractListListEntry.AbstractListCell<KeyFunction, KeybindingListCell, KeybindingListEntry> {
         
         private KeyFunction keyFunction;
-        private KeybindingListEntry listEntry;
         private AbstractButtonWidget widget;
         
         public KeybindingListCell(KeyFunction keyFunction, KeybindingListEntry keybindingListEntry) {
+            super(keyFunction, keybindingListEntry);
             this.keyFunction = keyFunction;
-            this.listEntry = keybindingListEntry;
             widget = new AbstractPressableButtonWidget(0, 0, 100, 18, "") {
                 @Override
                 public void onPress() {
@@ -79,8 +71,8 @@ public class KeybindingListEntry extends BaseListEntry<KeyFunction, KeybindingLi
                     MinecraftClient.getInstance().openScreen(new KeybindingSelectionScreen(function -> {
                         MinecraftClient.getInstance().openScreen(screen);
                         if (function == null) {
-                            listEntry.cells.remove(KeybindingListCell.this);
-                            listEntry.widgets.remove(KeybindingListCell.this);
+                            listListEntry.cells.remove(KeybindingListCell.this);
+                            listListEntry.widgets.remove(KeybindingListCell.this);
                             return;
                         }
                         KeybindingListCell.this.keyFunction = function.orElse(null);
@@ -88,6 +80,11 @@ public class KeybindingListEntry extends BaseListEntry<KeyFunction, KeybindingLi
                     }, keyFunction == null || keyFunction.isNull() || !keyFunction.hasCommand() ? "" : keyFunction.getCommand()));
                 }
             };
+        }
+        
+        @Override
+        public KeyFunction getValue() {
+            return keyFunction;
         }
         
         @Override
@@ -105,7 +102,7 @@ public class KeybindingListEntry extends BaseListEntry<KeyFunction, KeybindingLi
             widget.setWidth(entryWidth - 12);
             widget.x = x;
             widget.y = y + 1;
-            widget.active = listEntry.isEditable();
+            widget.active = listListEntry.isEditable();
             widget.setMessage(keyFunction == null || keyFunction.isNull() ? I18n.translate("config.category.key.not-set") : I18n.translate("config.category.key", keyFunction.getFormattedName()));
             widget.render(mouseX, mouseY, delta);
         }

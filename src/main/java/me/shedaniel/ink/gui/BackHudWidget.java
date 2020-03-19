@@ -28,7 +28,7 @@ public class BackHudWidget extends Widget {
             float alpha = INeedKeybinds.hudWidget.getAlpha();
             Rectangle title = new Rectangle((int) (10 - (1 - alpha) * (WIDTH + 10)), bounds.y, WIDTH, 16);
             fill(title.x, title.y, title.x + title.width, title.y + title.height, color(0, 0, 0, (int) (200f * alpha)));
-            drawCenteredString(font, "Press " + I18n.translate(toggleHud.getBoundKey().getName()) + " to HIDE", bounds.x + bounds.width / 2, bounds.y + 4, 16777215);
+            drawCenteredString(textRenderer, "Press " + I18n.translate(toggleHud.getBoundKey().getName()) + " to HIDE", bounds.x + bounds.width / 2, bounds.y + 4, 16777215);
         }
     }
     

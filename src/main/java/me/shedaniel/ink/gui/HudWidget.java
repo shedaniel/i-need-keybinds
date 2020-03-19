@@ -2,7 +2,6 @@ package me.shedaniel.ink.gui;
 
 import com.google.common.collect.Lists;
 import me.shedaniel.ink.HudState;
-import net.minecraft.client.render.GuiLighting;
 
 import java.awt.*;
 import java.util.Collections;
@@ -17,11 +16,11 @@ public class HudWidget extends Widget {
     
     public HudWidget() {
         generalWidgets = Lists.newArrayList(new TitleWidget(new Rectangle(10, 10, WIDTH, 16), HudState.GENERAL));
-        for(int i = 0; i < 8; i++)
+        for (int i = 0; i < 8; i++)
             generalWidgets.add(new MenuItemWidget(new Rectangle(10, 31 + i * 21, WIDTH, 16), HudState.GENERAL, i));
         generalWidgets.add(new BackHudWidget(new Rectangle(10, 31 + 8 * 21, WIDTH, 16), HudState.GENERAL));
         categoryWidgets = Lists.newArrayList(new CategoryTitleWidget(new Rectangle(10, 10, WIDTH, 16), HudState.CATEGORY));
-        for(int i = 0; i < 8; i++)
+        for (int i = 0; i < 8; i++)
             categoryWidgets.add(new KeybindingItemWidget(new Rectangle(10, 31 + i * 21, WIDTH, 16), HudState.CATEGORY, i));
         categoryWidgets.add(new BackMenuWidget(new Rectangle(10, 31 + 8 * 21, WIDTH, 16), HudState.CATEGORY));
     }
@@ -33,18 +32,15 @@ public class HudWidget extends Widget {
     
     @Override
     public void render(float var3, long ms) {
-        GuiLighting.disable();
         float alpha = getAlpha();
         Rectangle title = new Rectangle((int) (10 - (1 - alpha) * (WIDTH + 10)), 10, WIDTH, 16);
         fill(title.x, title.y, title.x + title.width, title.y + title.height, color(0, 0, 0, (int) (225f * alpha)));
-        generalWidgets.forEach(widget -> {
-            GuiLighting.disable();
+        for (Widget widget : generalWidgets) {
             widget.render(var3, ms);
-        });
-        categoryWidgets.forEach(widget -> {
-            GuiLighting.disable();
+        }
+        for (Widget widget : categoryWidgets) {
             widget.render(var3, ms);
-        });
+        }
     }
     
     float getAlpha() {

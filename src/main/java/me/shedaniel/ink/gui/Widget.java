@@ -11,11 +11,11 @@ public abstract class Widget extends AbstractParentElement {
     /**
      * The Minecraft Client instance
      */
-    protected final MinecraftClient minecraft = MinecraftClient.getInstance();
+    protected final MinecraftClient client = MinecraftClient.getInstance();
     /**
      * The font for rendering text
      */
-    protected final TextRenderer font = minecraft.textRenderer;
+    protected final TextRenderer textRenderer = client.textRenderer;
     
     abstract public void render(float var3, long ms);
     

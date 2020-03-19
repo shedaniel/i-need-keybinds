@@ -21,12 +21,13 @@ public class TitleWidget extends Widget {
         this.hudState = hudState;
     }
     
+    @SuppressWarnings("IntegerDivisionInFloatingPointContext")
     @Override
     public void render(float var3, long ms) {
         if (INeedKeybinds.hudState == hudState || (INeedKeybinds.hudState == HudState.HIDDEN && lastState == hudState)) {
             Rectangle bounds = getBounds();
             String s = "Select Category";
-            font.drawWithShadow(s, bounds.x + bounds.width / 2 - font.getStringWidth(s) / 2, bounds.y + 4, 16777215);
+            textRenderer.drawWithShadow(s, bounds.x + bounds.width / 2 - textRenderer.getStringWidth(s) / 2, bounds.y + 4, 16777215);
         }
     }
     

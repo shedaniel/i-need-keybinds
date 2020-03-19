@@ -1,9 +1,7 @@
 package me.shedaniel.ink.cloth;
 
+import io.github.prospector.modmenu.api.ConfigScreenFactory;
 import io.github.prospector.modmenu.api.ModMenuApi;
-import net.minecraft.client.gui.screen.Screen;
-
-import java.util.function.Function;
 
 public class ModMenuCombat implements ModMenuApi {
     
@@ -13,7 +11,7 @@ public class ModMenuCombat implements ModMenuApi {
     }
     
     @Override
-    public Function<Screen, ? extends Screen> getConfigScreenFactory() {
+    public ConfigScreenFactory<?> getModConfigScreenFactory() {
         return ClothConfigCombat::getScreen;
     }
     

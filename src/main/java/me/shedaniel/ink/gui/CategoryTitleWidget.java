@@ -19,7 +19,7 @@ public class CategoryTitleWidget extends TitleWidget {
         if (INeedKeybinds.hudState == hudState || (INeedKeybinds.hudState == HudState.HIDDEN && lastState == hudState)) {
             Rectangle bounds = getBounds();
             ConfigObject.CategoryObject categoryObject = configObject.categories.get(category);
-            drawCenteredString(font, (INeedKeybinds.category + 1) + " - " + categoryObject.name == null ? "Not Set" : categoryObject.name, bounds.x + bounds.width / 2, bounds.y + 4, 16777215);
+            drawCenteredString(textRenderer, (INeedKeybinds.category + 1) + " - " + categoryObject.name == null ? "Not Set" : categoryObject.name, bounds.x + bounds.width / 2, bounds.y + 4, 16777215);
         }
     }
     

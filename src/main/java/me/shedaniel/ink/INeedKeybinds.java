@@ -7,6 +7,7 @@ import me.shedaniel.ink.gui.HudWidget;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
 import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -22,7 +23,8 @@ import java.util.stream.Collectors;
 public class INeedKeybinds implements ClientModInitializer {
     
     public static final int WIDTH = 150;
-    public static FabricKeyBinding toggleHud, numbers[] = new FabricKeyBinding[8];
+    public static FabricKeyBinding toggleHud;
+    public static FabricKeyBinding[] numbers = new FabricKeyBinding[8];
     public static long lastSwitch = -1;
     public static int category = -1;
     public static HudState hudState = HudState.HIDDEN;
@@ -55,7 +57,7 @@ public class INeedKeybinds implements ClientModInitializer {
     }
     
     public static int color(int r, int g, int b, int a) {
-        return ((a & 0xFF) << 24) | ((r & 0xFF) << 16) | ((g & 0xFF) << 8) | ((b & 0xFF) << 0);
+        return ((a & 0xFF) << 24) | ((r & 0xFF) << 16) | ((g & 0xFF) << 8) | ((b & 0xFF));
     }
     
     public static float ease(float t) {
@@ -67,7 +69,7 @@ public class INeedKeybinds implements ClientModInitializer {
             Field field = KeyBinding.class.getDeclaredFields()[0];
             if (!field.isAccessible())
                 field.setAccessible(true);
-            return (Map) field.get(null);
+            return (Map<String, KeyBinding>) field.get(null);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -84,7 +86,7 @@ public class INeedKeybinds implements ClientModInitializer {
         String category = "category.ink.keybinds";
         KeyBindingRegistry.INSTANCE.addCategory(category);
         KeyBindingRegistry.INSTANCE.register(toggleHud = FabricKeyBinding.Builder.create(new Identifier("i-need-keybinds", "toggle_hud"), InputUtil.Type.KEYSYM, 320, category).build());
-        for(int i = 0; i < 8; i++)
+        for (int i = 0; i < 8; i++)
             KeyBindingRegistry.INSTANCE.register(numbers[i] = FabricKeyBinding.Builder.create(new Identifier("i-need-keybinds", "number_" + i), InputUtil.Type.KEYSYM, 321 + i, category).build());
         List<KeyBinding> unPress = new ArrayList<>();
         ClothClientHooks.HANDLE_INPUT.register(client -> {
@@ -100,7 +102,7 @@ public class INeedKeybinds implements ClientModInitializer {
                     switchState(HudState.GENERAL);
                 else
                     switchState(HudState.HIDDEN);
-            for(int i = 0; i < 8; i++) {
+            for (int i = 0; i < 8; i++) {
                 boolean a = false;
                 boolean b = false;
                 while (numbers[i].wasPressed()) {
@@ -135,6 +137,7 @@ public class INeedKeybinds implements ClientModInitializer {
             }
             pressed = pressedKeys.stream().distinct().collect(Collectors.toList());
         });
+        HudRenderCallback.EVENT.register(INeedKeybinds::renderHud);
     }
     
 }

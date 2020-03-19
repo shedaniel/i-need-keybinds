@@ -4,13 +4,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
   ],
-  "client": [
-    "MixinInGameHud",
-    "MixinKeyBinding",
-    "MixinChatScreen",
-    "MixinClientPlayerEntity",
-    "MixinClientPlayNetworkHandler"
-  ],
+  "client": ["MixinChatScreen", "MixinClientPlayerEntity", "MixinClientPlayNetworkHandler", "MixinKeyBinding"],
   "injectors": {
     "defaultRequire": 1
   }

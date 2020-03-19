@@ -13,11 +13,9 @@ public class ConfigManager {
     
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private final File configFile;
-    private boolean craftableOnly;
     
     public ConfigManager() {
         this.configFile = new File(FabricLoader.getInstance().getConfigDirectory(), "i-need-keybinds/config.json");
-        this.craftableOnly = false;
         try {
             loadConfig();
         } catch (IOException e) {
@@ -43,7 +41,6 @@ public class ConfigManager {
         } catch (Exception e) {
             e.printStackTrace();
             INeedKeybinds.configObject = new ConfigObject();
-            return;
         }
     }
     

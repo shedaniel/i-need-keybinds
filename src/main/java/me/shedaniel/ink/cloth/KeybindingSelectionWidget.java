@@ -54,6 +54,7 @@ public class KeybindingSelectionWidget extends DynamicElementListWidget<Keybindi
             this.text = I18n.translate(string_2);
         }
         
+        @SuppressWarnings("IntegerDivisionInFloatingPointContext")
         @Override
         public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
             TextRenderer font = MinecraftClient.getInstance().textRenderer;
