@@ -1,5 +1,6 @@
 package me.shedaniel.ink.impl;
 
+import com.google.common.base.Objects;
 import me.shedaniel.ink.INeedKeybinds;
 import me.shedaniel.ink.api.KeyFunction;
 import net.minecraft.client.options.KeyBinding;
@@ -10,10 +11,15 @@ public class KeyFunctionImpl implements KeyFunction {
     private String keyBinding;
     private String command;
     
+    public KeyFunctionImpl() {
+    }
+    
     public KeyFunctionImpl(String configStr) {
-        if (configStr.startsWith("cmd:"))
-            this.command = configStr.substring(4);
-        this.keyBinding = configStr;
+        if (configStr != null) {
+            if (configStr.startsWith("cmd:"))
+                this.command = configStr.substring(4);
+            this.keyBinding = configStr;
+        }
     }
     
     public KeyFunctionImpl(KeyBinding keyBinding) {
@@ -47,7 +53,23 @@ public class KeyFunctionImpl implements KeyFunction {
     
     @Override
     public String toString() {
-        return hasCommand() ? "cmd:" + getCommand() : getKeybind().getId();
+        return hasCommand() ? "cmd:" + getCommand() : keyBinding;
     }
     
+    @Override
+    public KeyFunction copy() {
+        return new KeyFunctionImpl(toString());
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        return Objects.equal(toString(), o.toString());
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(keyBinding, command);
+    }
 }

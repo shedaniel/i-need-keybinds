@@ -1,7 +1,7 @@
 import java.text.SimpleDateFormat
 
 plugins {
-    id 'fabric-loom' version '0.2.7-SNAPSHOT'
+    id 'fabric-loom' version '0.4-SNAPSHOT'
     id 'maven-publish'
 }
 
@@ -12,17 +12,21 @@ archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
 
+repositories {
+    maven { url "https://dl.bintray.com/shedaniel/legacy-yarn-updated" }
+}
+
 dependencies {
     //to change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}"
+    mappings "me.shedaniel:legacy-yarn:${project.yarn_mappings}:v2"
     modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    modCompile "me.shedaniel.cloth:cloth-events:${cloth_events_version}"
+    modCompile "me.shedaniel.cloth.api:cloth-client-events-v0:${cloth_client_events_v0_version}"
     modCompile "blue.endless:jankson:${jankson_version}"
-    modCompile('me.shedaniel.cloth:config-2:3.1.0-unstable') {
+    modCompile('me.shedaniel.cloth:config-2:4.6.0') {
         exclude group: "net.fabricmc.fabric-api"
     }
     modCompile("io.github.prospector:modmenu:${modmenu_version}") {
@@ -30,9 +34,9 @@ dependencies {
     }
     compileOnly 'org.jetbrains:annotations:19.0.0'
     include 'org.jetbrains:annotations:19.0.0'
-    include "me.shedaniel.cloth:cloth-events:${cloth_events_version}"
+    include "me.shedaniel.cloth.api:cloth-client-events-v0:${cloth_client_events_v0_version}"
     include "blue.endless:jankson:${jankson_version}"
-    include 'me.shedaniel.cloth:config-2:3.1.0-unstable'
+    include 'me.shedaniel.cloth:config-2:4.6.0'
 
     // PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
     // You may need to force-disable transitiveness on them.

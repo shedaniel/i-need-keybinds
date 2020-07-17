@@ -12,6 +12,9 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
 import java.util.Collections;
@@ -56,9 +59,9 @@ public class KeybindingSelectionWidget extends DynamicElementListWidget<Keybindi
         
         @SuppressWarnings("IntegerDivisionInFloatingPointContext")
         @Override
-        public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
+        public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
             TextRenderer font = MinecraftClient.getInstance().textRenderer;
-            font.draw(text, x + entryWidth / 2 - font.getStringWidth(text) / 2, y, 16777215);
+            font.draw(matrices, text, x + entryWidth / 2 - font.getStringWidth(text) / 2, y, 16777215);
         }
         
         @Override
@@ -75,18 +78,18 @@ public class KeybindingSelectionWidget extends DynamicElementListWidget<Keybindi
         public KeyBindingEntry(Consumer<Optional<KeyFunction>> consumer, KeyBinding keyBinding_1, AtomicInteger entryWidth) {
             this.keyBinding_1 = keyBinding_1;
             this.entryWidth = entryWidth;
-            this.widget = new ButtonWidget(0, 0, 100, 20, I18n.translate("text.ink.select"), var1 -> {
+            this.widget = new ButtonWidget(0, 0, 100, 20, new TranslatableText("text.ink.select"), var1 -> {
                 consumer.accept(Optional.ofNullable(new KeyFunctionImpl(keyBinding_1)));
             });
         }
         
         @Override
-        public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
+        public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
             TextRenderer font = MinecraftClient.getInstance().textRenderer;
-            font.draw(I18n.translate(keyBinding_1.getId()), x, y, 16777215);
+            font.draw(matrices, I18n.translate(keyBinding_1.getId()), x, y, 16777215);
             widget.y = y - 5;
             widget.x = x + entryWidth - widget.getWidth();
-            widget.render(mouseX, mouseY, delta);
+            widget.render(matrices, mouseX, mouseY, delta);
         }
         
         @Override
@@ -101,25 +104,25 @@ public class KeybindingSelectionWidget extends DynamicElementListWidget<Keybindi
         
         public CommandEntry(Consumer<Optional<KeyFunction>> consumer, String s) {
             int i = MinecraftClient.getInstance().textRenderer.getStringWidth(I18n.translate("text.ink.select")) + 8;
-            this.widget = new ButtonWidget(0, 0, i, 20, I18n.translate("text.ink.select"), var1 -> {
+            this.widget = new ButtonWidget(0, 0, i, 20, new TranslatableText("text.ink.select"), var1 -> {
                 consumer.accept(Optional.ofNullable(new KeyFunctionImpl("cmd:" + textField.getText())));
             });
-            this.textField = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, 0, 0, 150 - i - 10, 16, "");
+            this.textField = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, 0, 0, 150 - i - 10, 16, Text.method_30163(""));
             this.textField.setMaxLength(1000000);
             this.textField.setText(s);
         }
         
         @Override
-        public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
+        public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
             TextRenderer font = MinecraftClient.getInstance().textRenderer;
-            font.draw(I18n.translate("text.category.ink.commands"), x, y, 16777215);
+            font.draw(matrices, I18n.translate("text.category.ink.commands"), x, y, 16777215);
             widget.y = y - 7;
             widget.x = x + entryWidth - widget.getWidth();
             widget.active = textField.getText().startsWith("/");
             textField.y = y - 5;
             textField.x = widget.x - 10 - textField.getWidth();
-            widget.render(mouseX, mouseY, delta);
-            textField.render(mouseX, mouseY, delta);
+            widget.render(matrices, mouseX, mouseY, delta);
+            textField.render(matrices, mouseX, mouseY, delta);
         }
         
         @Override

@@ -2,8 +2,9 @@ package me.shedaniel.ink.gui;
 
 import com.google.common.collect.Lists;
 import me.shedaniel.ink.HudState;
+import me.shedaniel.math.Rectangle;
+import net.minecraft.client.util.math.MatrixStack;
 
-import java.awt.*;
 import java.util.Collections;
 import java.util.List;
 
@@ -31,15 +32,15 @@ public class HudWidget extends Widget {
     }
     
     @Override
-    public void render(float var3, long ms) {
+    public void render(MatrixStack matrices, float var3, long ms) {
         float alpha = getAlpha();
         Rectangle title = new Rectangle((int) (10 - (1 - alpha) * (WIDTH + 10)), 10, WIDTH, 16);
-        fill(title.x, title.y, title.x + title.width, title.y + title.height, color(0, 0, 0, (int) (225f * alpha)));
+        fill(matrices, title.x, title.y, title.x + title.width, title.y + title.height, color(0, 0, 0, (int) (225f * alpha)));
         for (Widget widget : generalWidgets) {
-            widget.render(var3, ms);
+            widget.render(matrices, var3, ms);
         }
         for (Widget widget : categoryWidgets) {
-            widget.render(var3, ms);
+            widget.render(matrices, var3, ms);
         }
     }
     

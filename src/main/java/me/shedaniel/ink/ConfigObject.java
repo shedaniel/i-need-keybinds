@@ -20,13 +20,13 @@ public class ConfigObject {
         private List<String> keybinds;
         
         public List<KeyFunction> getFunctions() {
-        return keybinds.stream().map(KeyFunctionImpl::new).collect(Collectors.toList());
+            return keybinds.stream().map(KeyFunctionImpl::new).collect(Collectors.toList());
         }
-    
+        
         public List<String> getKeybinds() {
             return keybinds;
         }
-    
+        
         public CategoryObject() {
             name = null;
             keybinds = Lists.newArrayList();

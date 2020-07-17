@@ -3,15 +3,19 @@ package me.shedaniel.ink.cloth;
 import me.shedaniel.clothconfig2.gui.entries.AbstractListListEntry;
 import me.shedaniel.clothconfig2.gui.entries.StringListEntry;
 import me.shedaniel.ink.api.KeyFunction;
+import me.shedaniel.ink.impl.KeyFunctionImpl;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.gui.widget.AbstractPressableButtonWidget;
-import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -19,13 +23,8 @@ public class KeybindingListEntry extends AbstractListListEntry<KeyFunction, Keyb
     
     private StringListEntry entry;
     
-    public KeybindingListEntry(StringListEntry entry, String fieldName, List<KeyFunction> values, boolean defaultExpended, Consumer<List<KeyFunction>> saveConsumer, String resetButtonKey, boolean requiresRestart) {
-//        super(fieldName, null, Collections::emptyList, baseListEntry -> new KeybindingListCell(null, (KeybindingListEntry) baseListEntry), saveConsumer, resetButtonKey, requiresRestart, false, false);
-        super(fieldName, values, defaultExpended, null, saveConsumer, Collections::emptyList, resetButtonKey, requiresRestart, false, false, (value, self) -> new KeybindingListCell(value, self));
-//        for (KeyFunction keyFunction : value)
-//            cells.add(new KeybindingListCell(keyFunction, this));
-//        this.widgets.addAll(cells);
-//        expanded = defaultExpended;
+    public KeybindingListEntry(StringListEntry entry, String fieldName, List<KeyFunction> values, boolean defaultExpended, Consumer<List<KeyFunction>> saveConsumer, Text resetButtonKey, boolean requiresRestart) {
+        super(new TranslatableText(fieldName), values, defaultExpended, null, saveConsumer, Collections::emptyList, resetButtonKey, requiresRestart, false, false, KeybindingListCell::new);
         this.entry = entry;
     }
     
@@ -35,36 +34,28 @@ public class KeybindingListEntry extends AbstractListListEntry<KeyFunction, Keyb
     }
     
     @Override
-    public Optional<String> getError() {
-        Optional<String> error = super.getError();
+    public Optional<Text> getError() {
+        Optional<Text> error = super.getError();
         if (error.isPresent())
             return error;
         if (entry != null && !cells.isEmpty()) {
             if (entry.getValue() == null || entry.getValue().isEmpty() || entry.getValue().equalsIgnoreCase("null"))
-                return Optional.of(I18n.translate("error.category.need_name"));
+                return Optional.of(new TranslatableText("error.category.need_name"));
         }
         return Optional.empty();
     }
-
-//    @Override
-//    protected KeybindingListCell getFromValue(KeyFunction value) {
-//        return new KeybindingListCell(value, this);
-//    }
-
-//    @Override
-//    public List<KeyFunction> getValue() {
-//        return cells.stream().map(keybindingListCell -> keybindingListCell.keyFunction).filter(Objects::nonNull).collect(Collectors.toList());
-//    }
     
     public static class KeybindingListCell extends AbstractListListEntry.AbstractListCell<KeyFunction, KeybindingListCell, KeybindingListEntry> {
-        
+        private final KeyFunction ogFunction;
         private KeyFunction keyFunction;
         private AbstractButtonWidget widget;
         
         public KeybindingListCell(KeyFunction keyFunction, KeybindingListEntry keybindingListEntry) {
             super(keyFunction, keybindingListEntry);
+            keyFunction = Optional.ofNullable(keyFunction).orElse(new KeyFunctionImpl()).copy();
+            this.ogFunction = keyFunction.copy();
             this.keyFunction = keyFunction;
-            widget = new AbstractPressableButtonWidget(0, 0, 100, 18, "") {
+            widget = new AbstractPressableButtonWidget(0, 0, 100, 20, Text.method_30163("")) {
                 @Override
                 public void onPress() {
                     Screen screen = MinecraftClient.getInstance().currentScreen;
@@ -76,10 +67,14 @@ public class KeybindingListEntry extends AbstractListListEntry<KeyFunction, Keyb
                             return;
                         }
                         KeybindingListCell.this.keyFunction = function.orElse(null);
-                        keybindingListEntry.getScreen().setEdited(true, keybindingListEntry.isRequiresRestart());
-                    }, keyFunction == null || keyFunction.isNull() || !keyFunction.hasCommand() ? "" : keyFunction.getCommand()));
+                    }, KeybindingListCell.this.keyFunction == null || KeybindingListCell.this.keyFunction.isNull() || !KeybindingListCell.this.keyFunction.hasCommand() ? "" : KeybindingListCell.this.keyFunction.getCommand()));
                 }
             };
+        }
+        
+        @Override
+        public boolean isEdited() {
+            return super.isEdited() || Objects.equals(keyFunction, ogFunction);
         }
         
         @Override
@@ -88,7 +83,7 @@ public class KeybindingListEntry extends AbstractListListEntry<KeyFunction, Keyb
         }
         
         @Override
-        public Optional<String> getError() {
+        public Optional<Text> getError() {
             return Optional.empty();
         }
         
@@ -98,13 +93,13 @@ public class KeybindingListEntry extends AbstractListListEntry<KeyFunction, Keyb
         }
         
         @Override
-        public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
+        public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
             widget.setWidth(entryWidth - 12);
             widget.x = x;
             widget.y = y + 1;
             widget.active = listListEntry.isEditable();
-            widget.setMessage(keyFunction == null || keyFunction.isNull() ? I18n.translate("config.category.key.not-set") : I18n.translate("config.category.key", keyFunction.getFormattedName()));
-            widget.render(mouseX, mouseY, delta);
+            widget.setMessage(keyFunction == null || keyFunction.isNull() ? new TranslatableText("config.category.key.not-set") : new TranslatableText("config.category.key", keyFunction.getFormattedName()));
+            widget.render(matrices, mouseX, mouseY, delta);
         }
         
         @Override

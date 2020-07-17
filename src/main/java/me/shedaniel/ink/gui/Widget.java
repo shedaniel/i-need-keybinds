@@ -1,10 +1,10 @@
 package me.shedaniel.ink.gui;
 
+import me.shedaniel.math.Rectangle;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.AbstractParentElement;
-
-import java.awt.*;
+import net.minecraft.client.util.math.MatrixStack;
 
 public abstract class Widget extends AbstractParentElement {
     
@@ -17,8 +17,8 @@ public abstract class Widget extends AbstractParentElement {
      */
     protected final TextRenderer textRenderer = client.textRenderer;
     
-    abstract public void render(float var3, long ms);
+    abstract public void render(MatrixStack matrices, float var3, long ms);
     
-    abstract public Shape getBounds();
+    abstract public Rectangle getBounds();
     
 }

@@ -7,6 +7,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
 
 import java.util.Collections;
@@ -52,7 +53,7 @@ public class KeybindingSelectionScreen extends Screen {
             }
             
             @Override
-            public void render(int var1, int var2, int var3, int var4, int var5, int var6, int var7, boolean var8, float var9) {
+            public void render(MatrixStack matrices, int var1, int var2, int var3, int var4, int var5, int var6, int var7, boolean var8, float var9) {
             }
         });
         widget.addEntry(new KeybindingSelectionWidget.CategoryEntry("text.category.ink.commands"));
@@ -71,19 +72,19 @@ public class KeybindingSelectionScreen extends Screen {
             widget.addEntry(new KeybindingSelectionWidget.KeyBindingEntry(consumer, keyBinding_1, entryWidth));
         }
         children.add(widget);
-        addButton(new ButtonWidget(width / 2 - 155, height - 25, 150, 20, I18n.translate("text.ink.cancel_select"), var1 -> {
+        addButton(new ButtonWidget(width / 2 - 155, height - 25, 150, 20, new TranslatableText("text.ink.cancel_select"), var1 -> {
             consumer.accept(Optional.empty());
         }));
-        addButton(new ButtonWidget(width / 2 - 155 + 160, height - 25, 150, 20, I18n.translate("text.ink.delete_entry"), var1 -> {
+        addButton(new ButtonWidget(width / 2 - 155 + 160, height - 25, 150, 20, new TranslatableText("text.ink.delete_entry"), var1 -> {
             consumer.accept(null);
         }));
     }
     
     @Override
-    public void render(int int_1, int int_2, float float_1) {
-        renderDirtBackground(0);
-        widget.render(int_1, int_2, float_1);
-        drawCenteredString(this.textRenderer, this.title.asFormattedString(), this.width / 2, 8, 16777215);
-        super.render(int_1, int_2, float_1);
+    public void render(MatrixStack matrices, int int_1, int int_2, float float_1) {
+        renderBackgroundTexture(0);
+        widget.render(matrices, int_1, int_2, float_1);
+        drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 8, 16777215);
+        super.render(matrices, int_1, int_2, float_1);
     }
 }

@@ -3,9 +3,8 @@
   "id": "i-need-keybinds",
   "version": "${version}",
   "name": "I Need Keybinds",
-  "description": "lol no",
   "authors": [
-    "Danielshe"
+    "shedaniel"
   ],
   "contact": {
     "sources": "https://github.com/shedaniel/i-need-keybinds"

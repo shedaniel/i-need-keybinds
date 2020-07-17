@@ -3,7 +3,6 @@ package me.shedaniel.ink.api;
 import net.minecraft.client.options.KeyBinding;
 
 public interface KeyFunction {
-    
     KeyBinding getKeybind();
     
     String getCommand();
@@ -13,4 +12,6 @@ public interface KeyFunction {
     boolean isNull();
     
     String getFormattedName();
+    
+    KeyFunction copy();
 }

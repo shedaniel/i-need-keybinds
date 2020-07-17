@@ -2,9 +2,11 @@ package me.shedaniel.ink.gui;
 
 import me.shedaniel.ink.HudState;
 import me.shedaniel.ink.INeedKeybinds;
+import me.shedaniel.math.Rectangle;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.MathHelper;
 
-import java.awt.*;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,16 +25,16 @@ public class TitleWidget extends Widget {
     
     @SuppressWarnings("IntegerDivisionInFloatingPointContext")
     @Override
-    public void render(float var3, long ms) {
+    public void render(MatrixStack matrices, float var3, long ms) {
         if (INeedKeybinds.hudState == hudState || (INeedKeybinds.hudState == HudState.HIDDEN && lastState == hudState)) {
             Rectangle bounds = getBounds();
             String s = "Select Category";
-            textRenderer.drawWithShadow(s, bounds.x + bounds.width / 2 - textRenderer.getStringWidth(s) / 2, bounds.y + 4, 16777215);
+            textRenderer.drawWithShadow(matrices, s, bounds.x + bounds.width / 2 - textRenderer.getStringWidth(s) / 2, bounds.y + 4, 16777215);
         }
     }
     
     public float getProgress() {
-        return INeedKeybinds.hudWidget.getAlpha();
+        return MathHelper.clamp(INeedKeybinds.hudWidget.getAlpha(), 0, 1);
     }
     
     @Override

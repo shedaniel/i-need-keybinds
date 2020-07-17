@@ -2,10 +2,12 @@ package me.shedaniel.ink.gui;
 
 import me.shedaniel.ink.HudState;
 import me.shedaniel.ink.INeedKeybinds;
+import me.shedaniel.math.Rectangle;
 import net.minecraft.client.gui.Element;
-import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.LiteralText;
+import net.minecraft.util.math.MathHelper;
 
-import java.awt.*;
 import java.util.Collections;
 import java.util.List;
 
@@ -22,18 +24,18 @@ public class BackHudWidget extends Widget {
     }
     
     @Override
-    public void render(float var3, long ms) {
+    public void render(MatrixStack matrices, float var3, long ms) {
         if (INeedKeybinds.hudState == hudState || (INeedKeybinds.hudState == HudState.HIDDEN && lastState == hudState)) {
             Rectangle bounds = getBounds();
             float alpha = INeedKeybinds.hudWidget.getAlpha();
             Rectangle title = new Rectangle((int) (10 - (1 - alpha) * (WIDTH + 10)), bounds.y, WIDTH, 16);
-            fill(title.x, title.y, title.x + title.width, title.y + title.height, color(0, 0, 0, (int) (200f * alpha)));
-            drawCenteredString(textRenderer, "Press " + I18n.translate(toggleHud.getBoundKey().getName()) + " to HIDE", bounds.x + bounds.width / 2, bounds.y + 4, 16777215);
+            fill(matrices, title.x, title.y, title.x + title.width, title.y + title.height, color(0, 0, 0, (int) (200f * alpha)));
+            drawCenteredText(matrices, textRenderer, new LiteralText("Press ").append(toggleHud.getBoundKeyLocalizedText()).append(" to HIDE"), bounds.x + bounds.width / 2, bounds.y + 4, 16777215);
         }
     }
     
     public float getProgress() {
-        return INeedKeybinds.hudWidget.getAlpha();
+        return MathHelper.clamp(INeedKeybinds.hudWidget.getAlpha(), 0, 1);
     }
     
     @Override

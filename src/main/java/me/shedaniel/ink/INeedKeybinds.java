@@ -1,17 +1,16 @@
 package me.shedaniel.ink;
 
-import me.shedaniel.cloth.hooks.ClothClientHooks;
 import me.shedaniel.ink.api.KeyBindingHooks;
 import me.shedaniel.ink.api.KeyFunction;
 import me.shedaniel.ink.gui.HudWidget;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
-import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.util.math.MatrixStack;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -23,8 +22,8 @@ import java.util.stream.Collectors;
 public class INeedKeybinds implements ClientModInitializer {
     
     public static final int WIDTH = 150;
-    public static FabricKeyBinding toggleHud;
-    public static FabricKeyBinding[] numbers = new FabricKeyBinding[8];
+    public static KeyBinding toggleHud;
+    public static KeyBinding[] numbers = new KeyBinding[8];
     public static long lastSwitch = -1;
     public static int category = -1;
     public static HudState hudState = HudState.HIDDEN;
@@ -38,10 +37,10 @@ public class INeedKeybinds implements ClientModInitializer {
         return configObject.animate;
     }
     
-    public static void renderHud(float delta) {
+    public static void renderHud(MatrixStack matrices, float delta) {
         if (hudWidget == null)
             hudWidget = new HudWidget();
-        hudWidget.render(delta, System.currentTimeMillis());
+        hudWidget.render(matrices, delta, System.currentTimeMillis());
     }
     
     public static void switchState(HudState hudState) {
@@ -84,12 +83,11 @@ public class INeedKeybinds implements ClientModInitializer {
     public void onInitializeClient() {
         configManager = new ConfigManager();
         String category = "category.ink.keybinds";
-        KeyBindingRegistry.INSTANCE.addCategory(category);
-        KeyBindingRegistry.INSTANCE.register(toggleHud = FabricKeyBinding.Builder.create(new Identifier("i-need-keybinds", "toggle_hud"), InputUtil.Type.KEYSYM, 320, category).build());
+        KeyBindingHelper.registerKeyBinding(toggleHud = new KeyBinding("key.i-need-keybinds.toggle_hud", InputUtil.Type.KEYSYM, 320, category));
         for (int i = 0; i < 8; i++)
-            KeyBindingRegistry.INSTANCE.register(numbers[i] = FabricKeyBinding.Builder.create(new Identifier("i-need-keybinds", "number_" + i), InputUtil.Type.KEYSYM, 321 + i, category).build());
+            KeyBindingHelper.registerKeyBinding(numbers[i] = new KeyBinding("key.i-need-keybinds.number_" + i, InputUtil.Type.KEYSYM, 321 + i, category));
         List<KeyBinding> unPress = new ArrayList<>();
-        ClothClientHooks.HANDLE_INPUT.register(client -> {
+        ClientTickEvents.START_CLIENT_TICK.register(client -> {
             if (!unPress.isEmpty()) {
                 unPress.forEach(keyBinding -> ((KeyBindingHooks) keyBinding).ink_setPressed(false));
                 unPress.clear();
